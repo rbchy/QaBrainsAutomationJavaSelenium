@@ -282,7 +282,7 @@ Pipeline capabilities:
 
 ## Ranajit Baran Chowdhury
 
-QA Automation Engineer
+Software Programmer & QA Automation Engineer
 
 📧 [chyranajit@gmail.com](mailto:chyranajit@gmail.com)
 📱 +1 (267)-342-5565
