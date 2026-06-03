@@ -1,4 +1,4 @@
-# 🚀 QaBrainsAutomation
+# 🚀 QaBrainsAutomationJavaSelenium
 
 A scalable and enterprise-ready Test Automation Framework built using **Selenium WebDriver + Java + Cucumber BDD + TestNG + Maven**.
 
