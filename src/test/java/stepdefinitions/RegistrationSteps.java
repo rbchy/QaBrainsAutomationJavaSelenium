@@ -2,65 +2,49 @@ package stepdefinitions;
 
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import pages.RegistrationPage;
 import utils.BaseTest;
 
 public class RegistrationSteps {
 
-    private WebDriver driver;
-    private RegistrationPage registrationPage;
+    private static final String NAME = "RB Chowdhury";
+    private static final String COUNTRY = "United States";
+    private static final String ACCOUNT_TYPE = "Engineer";
+    private static final String PASSWORD = "Password123";
 
-    public RegistrationSteps() {
-        this.driver = BaseTest.getDriver();
-        if (this.driver == null) {
-            throw new RuntimeException("Driver is null!");
-        }
-        this.registrationPage = new RegistrationPage(this.driver);
+    private RegistrationPage page() {
+        return new RegistrationPage(BaseTest.getDriver());
     }
 
     @When("User navigates to registration page")
     public void user_navigates_to_registration_page() {
-        registrationPage.openRegistrationPage();
+        page().openRegistrationPage();
     }
 
     @When("User enters valid registration details with email {string}")
     public void user_enters_valid_registration_details_with_email(String email) {
-        registrationPage.enterRegistrationDetails(
-                "Rezaul Karim",
-                "United States",
-                "Engineer",
-                email,
-                "Password123",
-                "Password123"
-        );
+        page().enterRegistrationDetails(NAME, COUNTRY, ACCOUNT_TYPE, email, PASSWORD, PASSWORD);
     }
 
     @When("User enters registration details with email {string}")
     public void user_enters_registration_details_with_email(String email) {
-        registrationPage.enterRegistrationDetails(
-                "Rezaul Karim",
-                "United States",
-                "Engineer",
-                email,
-                "Password123",
-                "Password123"
-        );
+        page().enterRegistrationDetails(NAME, COUNTRY, ACCOUNT_TYPE, email, PASSWORD, PASSWORD);
     }
 
     @When("User clicks on register button")
     public void user_clicks_on_register_button() {
-        registrationPage.clickRegister();
+        page().clickRegister();
     }
 
     @Then("User should be registered successfully")
     public void user_should_be_registered_successfully() {
-        Assert.assertTrue(registrationPage.isRegistrationSuccessful(), "Registration failed!");
+        Assert.assertTrue(page().isRegistrationSuccessful(), "No success message after registration");
     }
 
     @Then("Email validation error message should be displayed")
     public void email_validation_error_message_should_be_displayed() {
-        Assert.assertTrue(registrationPage.isEmailValidationMessageDisplayed(), "Email validation error not shown!");
+        Assert.assertTrue(page().isEmailValidationMessageDisplayed(),
+                "The browser did not reject an email without '@'");
     }
 }

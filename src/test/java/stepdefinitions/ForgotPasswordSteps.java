@@ -1,60 +1,53 @@
 package stepdefinitions;
 
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.en.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.JavascriptExecutor;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.testng.Assert;
 import pages.ForgotPasswordPage;
 import utils.BaseTest;
 
 public class ForgotPasswordSteps {
-    private WebDriver driver;
-    private ForgotPasswordPage forgotPasswordPage;
 
-    @Before
-    public void setUp() {
-        driver = BaseTest.getDriver();
-        forgotPasswordPage = new ForgotPasswordPage(driver);
+    private ForgotPasswordPage page() {
+        return new ForgotPasswordPage(BaseTest.getDriver());
     }
 
     @Given("User is on Forgot Password page")
-    public void userIsOnForgotPasswordPage() {
-        driver.get("https://practice.qabrains.com/forgot-password");
+    public void user_is_on_forgot_password_page() {
+        String home = BaseTest.config.getProperty("url").replaceAll("/+$", "");
+        BaseTest.getDriver().get(home + "/forgot-password");
     }
 
     @When("User enters registered email {string}")
-    public void userEntersRegisteredEmail(String email) {
-        forgotPasswordPage.enterEmail(email);
+    public void user_enters_registered_email(String email) {
+        page().enterEmail(email);
     }
 
     @When("User enters unregistered email {string}")
-    public void userEntersUnregisteredEmail(String email) {
-        forgotPasswordPage.enterEmail(email);
+    public void user_enters_unregistered_email(String email) {
+        page().enterEmail(email);
     }
 
     @And("User clicks on Submit button")
-    public void userClicksOnSubmitButton() {
-        forgotPasswordPage.clickSubmit();
+    public void user_clicks_on_submit_button() {
+        page().clickSubmit();
     }
 
     @Then("User should see success message {string}")
-    public void userShouldSeeSuccessMessage(String expected) {
-        String actual = forgotPasswordPage.getSuccessMessage();
-        Assert.assertTrue(actual.contains("reset") || actual.contains("success"));
+    public void user_should_see_success_message(String expected) {
+        String actual = page().getSuccessMessage();
+        Assert.assertFalse(actual.isEmpty(), "No success message was shown");
+        Assert.assertTrue(actual.toLowerCase().contains(expected.toLowerCase())
+                        || actual.toLowerCase().contains("success"),
+                "Success message was '" + actual + "', expected it to contain '" + expected + "'");
     }
 
     @Then("User should see error message {string}")
-    public void userShouldSeeErrorMessage(String expected) {
-        String actual = forgotPasswordPage.getErrorMessage();
-        Assert.assertTrue(actual.contains("@") || actual.contains("not found"));
-    }
-
-    @After
-    public void tearDown() {
-        BaseTest.quitDriver();
+    public void user_should_see_error_message(String expected) {
+        String actual = page().getErrorMessage();
+        Assert.assertTrue(actual.contains(expected),
+                "Error message was '" + actual + "', expected it to contain '" + expected + "'");
     }
 }

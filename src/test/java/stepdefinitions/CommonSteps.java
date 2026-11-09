@@ -2,42 +2,48 @@ package stepdefinitions;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import utils.BaseTest;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import utils.BaseTest;
+
+import java.time.Duration;
 
 public class CommonSteps {
 
-    private WebDriver driver;
+    private WebDriver driver() {
+        return BaseTest.getDriver();
+    }
 
-    public CommonSteps() {
-        this.driver = BaseTest.getDriver();
-        if (this.driver == null) {
-            throw new RuntimeException("Driver is null! Initialize BaseTest first.");
-        }
+    private String homeUrl() {
+        return BaseTest.config.getProperty("url");
     }
 
     @Given("User launches the application")
     public void user_launches_the_application() {
-        driver.get("https://practice.qabrains.com/");  // Launch homepage
-        System.out.println("Application launched");
+        driver().get(homeUrl());
     }
 
     @Given("User is on homepage")
     public void user_is_on_homepage() {
-        // শুধুমাত্র verification, বা redirect করা যায়
-        if (!driver.getCurrentUrl().contains("practice.qabrains.com")) {
-            driver.get("https://practice.qabrains.com/");
+        if (!driver().getCurrentUrl().contains("practice.qabrains.com")) {
+            driver().get(homeUrl());
         }
-        System.out.println("User is on homepage");
+        Assert.assertTrue(driver().getCurrentUrl().contains("practice.qabrains.com"),
+                "Expected the QA Brains home page but was on " + driver().getCurrentUrl());
     }
 
     @Then("Home page should load successfully")
     public void home_page_should_load_successfully() {
-        System.out.println("Home page loaded successfully");
-    }
-
-    @Then("Products should be added successfully")
-    public void products_should_be_added_successfully() {
-        System.out.println("Products added successfully");
+        new WebDriverWait(driver(), Duration.ofSeconds(20)).until(
+                d -> "complete".equals(((org.openqa.selenium.JavascriptExecutor) d)
+                        .executeScript("return document.readyState")));
+        Assert.assertFalse(driver().getTitle().isBlank(), "Home page has no title");
+        Assert.assertTrue(new WebDriverWait(driver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.tagName("body"))).isDisplayed());
+        Assert.assertTrue(driver().getCurrentUrl().contains("practice.qabrains.com"),
+                "Home page URL: " + driver().getCurrentUrl());
     }
 }
